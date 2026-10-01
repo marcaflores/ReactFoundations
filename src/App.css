@@ -350,6 +350,37 @@
   color: #fff;
 }
 
+/* Team selector + panels */
+.team-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 1000px) {
+  .teams-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.team-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.team-panel__title {
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
+  color: var(--color-primary-dark);
+}
+
 /* Pitch */
 .pitch {
   position: relative;
