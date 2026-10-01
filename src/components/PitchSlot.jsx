@@ -1,31 +1,34 @@
-function PitchSlot({ slot, assignedPlayer, availablePlayers, onAssign }) {
-  const options = assignedPlayer ? [assignedPlayer, ...availablePlayers] : availablePlayers
+function PitchSlot({ slot, assignedPlayer, isActive, onSelect }) {
+  const chipClass = assignedPlayer
+    ? `pitch-slot__chip position-badge--${assignedPlayer.position}`
+    : 'pitch-slot__chip pitch-slot__chip--empty'
 
   return (
     <div className="pitch-slot" style={{ left: `${slot.x}%`, top: `${slot.y}%` }}>
-      {assignedPlayer ? (
-        <div className={`pitch-slot__chip position-badge--${assignedPlayer.position}`}>
-          <span className="pitch-slot__name">{assignedPlayer.name}</span>
-          <span className="pitch-slot__rating">{assignedPlayer.rating}</span>
-        </div>
-      ) : (
-        <div className="pitch-slot__chip pitch-slot__chip--empty">
-          <span className="pitch-slot__role">{slot.title}</span>
-        </div>
-      )}
-      <select
-        className="pitch-slot__select"
-        aria-label={`Assign player to ${slot.title}`}
-        value={assignedPlayer ? assignedPlayer.id : ''}
-        onChange={(event) => onAssign(slot.id, event.target.value)}
+      <button
+        type="button"
+        className={`${chipClass}${isActive ? ' pitch-slot__chip--active' : ''}`}
+        aria-label={
+          assignedPlayer
+            ? `${slot.title}: ${assignedPlayer.name}. Change player`
+            : `${slot.title}: empty. Pick a player`
+        }
+        onClick={() => onSelect(slot.id)}
       >
-        <option value="">{slot.title} — empty</option>
-        {options.map((player) => (
-          <option key={player.id} value={player.id}>
-            {player.name} ({player.position})
-          </option>
-        ))}
-      </select>
+        {assignedPlayer ? (
+          <>
+            <span className="pitch-slot__name">{assignedPlayer.name}</span>
+            <span className="pitch-slot__rating">
+              {slot.title} · {assignedPlayer.rating}
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="pitch-slot__plus" aria-hidden="true">+</span>
+            <span className="pitch-slot__role">{slot.title}</span>
+          </>
+        )}
+      </button>
     </div>
   )
 }

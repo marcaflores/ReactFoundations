@@ -1,11 +1,34 @@
+import { useCallback, useState } from 'react'
 import PitchSlot from './PitchSlot'
+import SlotPicker from './SlotPicker'
 import { FORMATIONS } from '../data/formations'
 
 function Pitch({ formationKey, squad, assignments, otherTeamAssignments, onAssign }) {
+  const [activeSlotId, setActiveSlotId] = useState(null)
+  const closePicker = useCallback(() => setActiveSlotId(null), [])
+
   const formation = FORMATIONS[formationKey]
   const assignedIds = new Set(Object.values(assignments))
   const otherTeamIds = new Set(Object.values(otherTeamAssignments ?? {}))
   const playersById = new Map(squad.map((player) => [player.id, player]))
+
+  const activeSlot = formation.slots.find((slot) => slot.id === activeSlotId)
+  const activePlayerId = activeSlot ? assignments[activeSlot.id] : null
+  const candidates = activeSlot
+    ? squad
+        .filter(
+          (player) =>
+            player.position === activeSlot.role &&
+            !assignedIds.has(player.id) &&
+            !otherTeamIds.has(player.id),
+        )
+        .sort((a, b) => b.rating - a.rating)
+    : []
+
+  function assignAndClose(playerId) {
+    onAssign(activeSlot.id, playerId)
+    closePicker()
+  }
 
   return (
     <div className="pitch">
@@ -13,20 +36,28 @@ function Pitch({ formationKey, squad, assignments, otherTeamAssignments, onAssig
       {formation.slots.map((slot) => {
         const assignedPlayerId = assignments[slot.id]
         const assignedPlayer = assignedPlayerId ? playersById.get(assignedPlayerId) : null
-        const availablePlayers = squad.filter(
-          (player) => !assignedIds.has(player.id) && !otherTeamIds.has(player.id),
-        )
 
         return (
           <PitchSlot
             key={slot.id}
             slot={slot}
             assignedPlayer={assignedPlayer}
-            availablePlayers={availablePlayers}
-            onAssign={onAssign}
+            isActive={slot.id === activeSlotId}
+            onSelect={setActiveSlotId}
           />
         )
       })}
+
+      {activeSlot && (
+        <SlotPicker
+          slot={activeSlot}
+          assignedPlayer={activePlayerId ? playersById.get(activePlayerId) : null}
+          candidates={candidates}
+          onPick={assignAndClose}
+          onClear={() => assignAndClose('')}
+          onClose={closePicker}
+        />
+      )}
     </div>
   )
 }
