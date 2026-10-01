@@ -92,6 +92,7 @@
 /* Shared panel look */
 .player-form,
 .player-list,
+.preset-players,
 .formation-picker,
 .team-summary {
   background: var(--color-card);
@@ -159,6 +160,23 @@
 
 .btn--primary:disabled {
   background: var(--color-border);
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 0 0.9rem;
+}
+
+.btn--outline:hover:not(:disabled) {
+  background: var(--color-primary-light);
+}
+
+.btn--outline:disabled {
+  border-color: var(--color-border);
   color: var(--color-muted);
   cursor: not-allowed;
 }
@@ -232,6 +250,40 @@
 .icon-button:hover {
   background: var(--color-primary-light);
   color: var(--color-primary);
+}
+
+.preset-players__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.preset-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.preset-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.preset-card__name {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .empty-state {
