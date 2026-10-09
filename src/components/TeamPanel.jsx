@@ -2,7 +2,17 @@ import FormationPicker from './FormationPicker'
 import Pitch from './Pitch'
 import TeamSummary from './TeamSummary'
 
-function TeamPanel({ teamId, team, squad, otherTeamAssignments, onFormationChange, onAssign }) {
+function TeamPanel({
+  teamId,
+  team,
+  squad,
+  otherTeamAssignments,
+  opponent,
+  matchResult,
+  onFormationChange,
+  onAssign,
+  onSimulate,
+}) {
   return (
     <div className="team-panel">
       <h3 className="team-panel__title">{team.label}</h3>
@@ -20,7 +30,15 @@ function TeamPanel({ teamId, team, squad, otherTeamAssignments, onFormationChang
         onAssign={(slotId, playerId) => onAssign(teamId, slotId, playerId)}
       />
 
-      <TeamSummary squad={squad} formationKey={team.formationKey} assignments={team.assignments} />
+      <TeamSummary
+        squad={squad}
+        formationKey={team.formationKey}
+        assignments={team.assignments}
+        teamLabel={team.label}
+        opponent={opponent}
+        matchResult={matchResult}
+        onSimulate={onSimulate}
+      />
     </div>
   )
 }

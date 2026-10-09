@@ -5,7 +5,7 @@ import PlayerForm from './components/PlayerForm'
 import PlayerList from './components/PlayerList'
 import TeamSelector from './components/TeamSelector'
 import TeamPanel from './components/TeamPanel'
-import MatchSimulator from './components/MatchSimulator'
+import { getLineupStats, simulateMatch } from './utils/teamStats'
 import './App.css'
 
 const INITIAL_TEAMS = {
@@ -17,6 +17,7 @@ function App() {
   const [squad, setSquad] = useState([])
   const [teams, setTeams] = useState(INITIAL_TEAMS)
   const [viewMode, setViewMode] = useState('team1')
+  const [matchResult, setMatchResult] = useState(null)
 
   function handleAddPlayer(player) {
     setSquad((prev) => [...prev, player])
@@ -58,6 +59,40 @@ function App() {
 
   const otherTeamId = { team1: 'team2', team2: 'team1' }
 
+  const stats = {
+    team1: getLineupStats(squad, teams.team1.formationKey, teams.team1.assignments),
+    team2: getLineupStats(squad, teams.team2.formationKey, teams.team2.assignments),
+  }
+
+  // A result only counts for the lineups it was played with; any change clears it.
+  const lineupKey = JSON.stringify([teams.team1, teams.team2])
+  const currentResult = matchResult?.lineupKey === lineupKey ? matchResult : null
+
+  function handleSimulate() {
+    const { goalsA, goalsB } = simulateMatch(stats.team1.averageRating, stats.team2.averageRating)
+    setMatchResult({ lineupKey, team1: goalsA, team2: goalsB })
+  }
+
+  function renderTeamPanel(teamId) {
+    const opponentId = otherTeamId[teamId]
+    return (
+      <TeamPanel
+        key={teamId}
+        teamId={teamId}
+        team={teams[teamId]}
+        squad={squad}
+        otherTeamAssignments={teams[opponentId].assignments}
+        opponent={{ label: teams[opponentId].label, isComplete: stats[opponentId].isComplete }}
+        matchResult={
+          currentResult && { goalsFor: currentResult[teamId], goalsAgainst: currentResult[opponentId] }
+        }
+        onFormationChange={handleFormationChange}
+        onAssign={handleAssign}
+        onSimulate={handleSimulate}
+      />
+    )
+  }
+
   return (
     <div className="app">
       <Header squadSize={squad.length} />
@@ -74,35 +109,11 @@ function App() {
 
           {viewMode === 'both' ? (
             <div className="teams-grid">
-              {['team1', 'team2'].map((teamId) => (
-                <TeamPanel
-                  key={teamId}
-                  teamId={teamId}
-                  team={teams[teamId]}
-                  squad={squad}
-                  otherTeamAssignments={teams[otherTeamId[teamId]].assignments}
-                  onFormationChange={handleFormationChange}
-                  onAssign={handleAssign}
-                />
-              ))}
+              {['team1', 'team2'].map(renderTeamPanel)}
             </div>
           ) : (
-            <TeamPanel
-              teamId={viewMode}
-              team={teams[viewMode]}
-              squad={squad}
-              otherTeamAssignments={teams[otherTeamId[viewMode]].assignments}
-              onFormationChange={handleFormationChange}
-              onAssign={handleAssign}
-            />
+            renderTeamPanel(viewMode)
           )}
-
-          {/* Remount (clearing the old score) whenever either lineup changes */}
-          <MatchSimulator
-            key={JSON.stringify([teams.team1, teams.team2])}
-            teams={teams}
-            squad={squad}
-          />
         </section>
       </main>
     </div>
