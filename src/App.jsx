@@ -36,6 +36,7 @@ function App() {
       }
       return next
     })
+    setMatchResult(null)
   }
 
   function handleFormationChange(teamId, nextFormationKey) {
@@ -43,6 +44,7 @@ function App() {
       ...prev,
       [teamId]: { ...prev[teamId], formationKey: nextFormationKey, assignments: {} },
     }))
+    setMatchResult(null)
   }
 
   function handleAssign(teamId, slotId, playerId) {
@@ -55,6 +57,7 @@ function App() {
       }
       return { ...prev, [teamId]: { ...prev[teamId], assignments } }
     })
+    setMatchResult(null)
   }
 
   const otherTeamId = { team1: 'team2', team2: 'team1' }
@@ -64,13 +67,9 @@ function App() {
     team2: getLineupStats(squad, teams.team2.formationKey, teams.team2.assignments),
   }
 
-  // A result only counts for the lineups it was played with; any change clears it.
-  const lineupKey = JSON.stringify([teams.team1, teams.team2])
-  const currentResult = matchResult?.lineupKey === lineupKey ? matchResult : null
-
   function handleSimulate() {
     const { goalsA, goalsB } = simulateMatch(stats.team1.averageRating, stats.team2.averageRating)
-    setMatchResult({ lineupKey, team1: goalsA, team2: goalsB })
+    setMatchResult({ team1: goalsA, team2: goalsB })
   }
 
   function renderTeamPanel(teamId) {
@@ -84,7 +83,7 @@ function App() {
         otherTeamAssignments={teams[opponentId].assignments}
         opponent={{ label: teams[opponentId].label, isComplete: stats[opponentId].isComplete }}
         matchResult={
-          currentResult && { goalsFor: currentResult[teamId], goalsAgainst: currentResult[opponentId] }
+          matchResult && { goalsFor: matchResult[teamId], goalsAgainst: matchResult[opponentId] }
         }
         onFormationChange={handleFormationChange}
         onAssign={handleAssign}

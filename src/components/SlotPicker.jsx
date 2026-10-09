@@ -1,17 +1,11 @@
-import { useEffect } from 'react'
-
 // Overlay listing the players who can fill the selected pitch slot.
 function SlotPicker({ slot, assignedPlayer, candidates, onPick, onClear, onClose }) {
-  useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
+  function handleKeyDown(event) {
+    if (event.key === 'Escape') onClose()
+  }
 
   return (
-    <div className="slot-picker" onClick={onClose}>
+    <div className="slot-picker" onClick={onClose} onKeyDown={handleKeyDown}>
       <div
         className="slot-picker__panel"
         role="dialog"
@@ -22,7 +16,8 @@ function SlotPicker({ slot, assignedPlayer, candidates, onPick, onClear, onClose
           <h4>
             {slot.title} <span className={`position-badge position-badge--${slot.role}`}>{slot.role}</span>
           </h4>
-          <button type="button" className="slot-picker__close" aria-label="Close" onClick={onClose}>
+          {/* autoFocus moves keyboard focus into the picker so Escape and Tab work right away */}
+          <button type="button" className="slot-picker__close" aria-label="Close" onClick={onClose} autoFocus>
             ×
           </button>
         </div>

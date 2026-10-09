@@ -15,7 +15,7 @@ function PlayerForm({ onAddPlayer }) {
       id: crypto.randomUUID(),
       name: trimmedName,
       position,
-      rating: Number(rating),
+      rating,
     })
 
     setName('')
@@ -58,7 +58,7 @@ function PlayerForm({ onAddPlayer }) {
           min={40}
           max={99}
           value={rating}
-          onChange={(event) => setRating(event.target.value)}
+          onChange={(event) => setRating(Number(event.target.value))}
         />
       </label>
 

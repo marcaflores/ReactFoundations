@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import PitchSlot from './PitchSlot'
 import SlotPicker from './SlotPicker'
 import { FORMATIONS } from '../data/formations'
 
 function Pitch({ formationKey, squad, assignments, otherTeamAssignments, onAssign }) {
   const [activeSlotId, setActiveSlotId] = useState(null)
-  const closePicker = useCallback(() => setActiveSlotId(null), [])
 
   const formation = FORMATIONS[formationKey]
   const assignedIds = new Set(Object.values(assignments))
@@ -27,7 +26,7 @@ function Pitch({ formationKey, squad, assignments, otherTeamAssignments, onAssig
 
   function assignAndClose(playerId) {
     onAssign(activeSlot.id, playerId)
-    closePicker()
+    setActiveSlotId(null)
   }
 
   return (
@@ -55,7 +54,7 @@ function Pitch({ formationKey, squad, assignments, otherTeamAssignments, onAssig
           candidates={candidates}
           onPick={assignAndClose}
           onClear={() => assignAndClose('')}
-          onClose={closePicker}
+          onClose={() => setActiveSlotId(null)}
         />
       )}
     </div>
