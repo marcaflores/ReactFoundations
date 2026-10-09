@@ -1,19 +1,9 @@
-import { FORMATIONS } from '../data/formations'
+import { getLineupStats } from '../utils/teamStats'
 
 function TeamSummary({ squad, formationKey, assignments }) {
-  const formation = FORMATIONS[formationKey]
-  const totalSlots = formation.slots.length
-  const filledIds = Object.values(assignments).filter(Boolean)
-  const filledSlots = filledIds.length
-
-  const assignedPlayers = squad.filter((player) => filledIds.includes(player.id))
-  const averageRating = assignedPlayers.length
-    ? Math.round(
-        assignedPlayers.reduce((sum, player) => sum + player.rating, 0) / assignedPlayers.length,
-      )
-    : 0
-
-  const isComplete = filledSlots === totalSlots
+  const stats = getLineupStats(squad, formationKey, assignments)
+  const { filledSlots, totalSlots, isComplete } = stats
+  const averageRating = Math.round(stats.averageRating)
 
   return (
     <div className="team-summary">

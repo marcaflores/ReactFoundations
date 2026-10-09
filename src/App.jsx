@@ -5,6 +5,7 @@ import PlayerForm from './components/PlayerForm'
 import PlayerList from './components/PlayerList'
 import TeamSelector from './components/TeamSelector'
 import TeamPanel from './components/TeamPanel'
+import MatchSimulator from './components/MatchSimulator'
 import './App.css'
 
 const INITIAL_TEAMS = {
@@ -95,6 +96,13 @@ function App() {
               onAssign={handleAssign}
             />
           )}
+
+          {/* Remount (clearing the old score) whenever either lineup changes */}
+          <MatchSimulator
+            key={JSON.stringify([teams.team1, teams.team2])}
+            teams={teams}
+            squad={squad}
+          />
         </section>
       </main>
     </div>
