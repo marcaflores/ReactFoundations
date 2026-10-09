@@ -94,24 +94,51 @@
   flex-direction: column;
   gap: var(--space-4);
   padding: clamp(1rem, 4vw, 2rem);
-  max-width: 1200px;
+  max-width: 1560px;
   width: 100%;
   margin: 0 auto;
 }
 
 .app-layout__sidebar,
-.app-layout__main {
+.app-layout__main,
+.app-layout__squad {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
   min-width: 0;
 }
 
+/* Tablet: quick add + create on the left, squad beneath them, field on the right */
 @media (min-width: 900px) {
   .app-layout {
     display: grid;
     grid-template-columns: minmax(280px, 340px) 1fr;
     align-items: start;
+  }
+
+  .app-layout__main {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .app-layout__squad {
+    grid-column: 1;
+  }
+}
+
+/* Desktop: quick add + create | field | squad */
+@media (min-width: 1280px) {
+  .app-layout {
+    grid-template-columns: minmax(280px, 340px) 1fr minmax(280px, 340px);
+  }
+
+  .app-layout__main {
+    grid-row: 1;
+  }
+
+  .app-layout__squad {
+    grid-column: 3;
+    grid-row: 1;
   }
 }
 

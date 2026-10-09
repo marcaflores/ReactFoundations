@@ -101,7 +101,6 @@ function App() {
         <section className="app-layout__sidebar">
           <PresetPlayers squad={squad} onAddPlayer={handleAddPlayer} />
           <PlayerForm onAddPlayer={handleAddPlayer} />
-          <PlayerList players={squad} onRemovePlayer={handleRemovePlayer} />
         </section>
 
         <section className="app-layout__main">
@@ -114,6 +113,10 @@ function App() {
           ) : (
             renderTeamPanel(viewMode)
           )}
+        </section>
+
+        <section className="app-layout__squad">
+          <PlayerList players={squad} onRemovePlayer={handleRemovePlayer} />
         </section>
       </main>
     </div>
